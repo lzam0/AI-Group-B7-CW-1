@@ -18,12 +18,24 @@ class State:
         """
         return "\n".join(" ".join(str(cell) for cell in row) for row in self.grid)
     
-    def moves():
+    def moves(self):
         """
             A generator method named moves() that yields all possible states reachable 
             in one move (i.e., removing one counter from any active cell). 
         """
-        return None
+        # Get all active positions on the board
+        active_pos = self.getPositions()
+
+        # Iterate through each active cell
+        for (i,j) in active_pos:
+            # Make a copy of the grid
+            new_grid = [row[:] for row in self.grid]
+            
+            # Remove the counter at that position
+            new_grid[i][j] -= 1
+
+            # Create a new yield
+            yield State(new_grid)
 
     def numRegions(self):
         """
@@ -45,8 +57,10 @@ class State:
         """
         # Amount of active nodes
         active_nodes = 0
+
         # Iterte through the grid
         for row in self.grid:
+
             # Iterate through the values in the row
             for value in row:
 
@@ -71,6 +85,21 @@ class State:
             # Fill the chosen cell with a random value
             self.grid[row][col] = random.randint(1, max_value)
 
+    def getPositions(self, value=None):
+        """
+        Return all positions of a given value in the grid.
+        If value is 0 (None), return all non-zero positions
+        """
+        positions = []
+        for i, row in enumerate(self.grid):
+            for j, cell in enumerate(row):
+                if value is None:
+                    if cell != 0:
+                        positions.append((i, j))
+                    else:
+                        positions.append((i,j))
+        return positions
+
     
     
 
@@ -79,7 +108,14 @@ def tester():
     print(sa)
 
     active_hingers = sa.numHingers()
-    print("Active Hingers on Board: ",active_hingers)
+    #print("Active Hingers on Board: ",active_hingers)
+
+    possible_moves = sa.moves()
+    # print(possible_moves)
+
+    for next_state in sa.moves():
+        print(next_state)
+        print("\n")
 
 if __name__ == "__main__":
     tester()
