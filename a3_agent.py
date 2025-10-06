@@ -6,3 +6,5 @@ class Agent:
 
     def move(self, state, mode):
         return None
+    
+    
