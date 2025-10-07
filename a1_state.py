@@ -108,14 +108,11 @@ def tester():
     print(sa)
 
     active_hingers = sa.numHingers()
-    #print("Active Hingers on Board: ",active_hingers)
+    print("Active Hingers on Board: ",active_hingers)
 
-    possible_moves = sa.moves()
-    # print(possible_moves)
-
-    for next_state in sa.moves():
-        print(next_state)
-        print("\n")
+    # for next_state in sa.moves():
+    #     print(next_state)
+    #     print("\n")
 
 if __name__ == "__main__":
     tester()
