@@ -1,64 +1,76 @@
 import pygame
 import sys
 
-class Game:
-    def __init__(self, width=800, height=600, title="Hinger Game"):
-        # Initialize Pygame
-        pygame.init()
+from a1_state import State
+from a3_agent import Agent
 
-        # Set up window properties
-        self.width = width
-        self.height = height
-        self.title = title
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption(self.title)
+def play(state, agentA, agentB):
+    """
+    Simulates the entire Hinger game session between 2 plasyers (agents or humans)
+    """
 
-        # Clock for frame rate control
-        self.clock = pygame.time.Clock()
-        self.FPS = 60
+    # Setup screen dimensions and title
+    pygame.init()
+    width, height = 800,600
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Hinger Game")
 
-        # Game state variables
-        self.running = True
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 36)
+    running = True
+    current_agent = "A"  # agentA starts
+    winner = None
+    background = (30,30,30)
 
-        # Example attributes (you can expand)
-        self.bg_color = (30, 30, 30)  # dark grey background
+    while running:
+        screen.fill(background)
 
-    def handle_events(self):
-        """Handle all events such as keyboard and mouse input."""
+        # --- Handle events (for human input or exit) ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                    running = False
+        
+        # --- Render state on screen ---
+        draw_board(screen, state, font)
+        pygame.display.flip()
+        clock.tick(30)
 
-    def update(self):
-        """Update game logic."""
-        # Example: could move objects, check collisions, etc.
-        pass
+        # --- End of game display ---
+    end_screen(screen, winner)
+    pygame.quit()
+    sys.exit()
 
-    def draw(self):
-        """Draw everything to the screen."""
-        self.screen.fill(self.bg_color)
+def draw_board(screen, state, font):
+    """
+    Draws the current game state to the screen.
+    """
+    text = font.render("Screen", True, (200, 200, 200))
+    screen.blit(text, (50, 50))
 
-        pygame.display.flip()  # Update the display
+def end_screen(screen, winner):
+    """
+    Displays the winner at the end of the game.
+    """
+    pass
 
-    def run(self):
-        """Main game loop."""
-        while self.running:
-            self.handle_events()
-            self.update()
-            self.draw()
-            self.clock.tick(self.FPS)  # Limit to 60 FPS
 
-        self.quit()
 
-    def quit(self):
-        """Clean up and close the game."""
-        pygame.quit()
-        sys.exit()
+def main():
+    """
+    Run Hinger Game
+    """
+    initial_state = State(None)
+    
+    # Example: human vs human
+    agentA = None
+    agentB = None
+
+    # Start the game session
+    play(initial_state, agentA, agentB)
 
 
 if __name__ == "__main__":
-    game = Game(800, 600, "Hinger Game")
-    game.run()
+    main()
