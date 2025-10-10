@@ -6,7 +6,7 @@ from a3_agent import Agent
 
 def play(state, agentA, agentB):
     """
-    Simulates the entire Hinger game session between 2 plasyers (agents or humans)
+    Simulates the entire Hinger game session between 2 players (agents or humans)
     """
 
     # Setup screen dimensions and title

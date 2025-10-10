@@ -39,16 +39,52 @@ class State:
 
     def numRegions(self):
         """
-        A method numRegions() that calculates and returns the number of active
-        nodes on the board
-
-        This is done by checking each position of the active nodes on the board
-        then it checks if the position of the nodes are connected
-        CONNECTED nodes MUST be either diaginal or next to opposing nodes
-
-        Utilise Depth First Search or Breadth First Search to traverse the grid
-        to find connected clusters together
+        Calculates and returns the number of connected regions of active nodes.
+        Active nodes are non-zero cells. 
+        Connectivity includes diagonal, horizontal, and vertical neighbors.
         """
+
+        rows = len(self.grid)
+        cols = len(self.grid[0])
+        visited = [[False for _ in range(cols)] for _ in range(rows)]
+        region_count = 0
+
+        # Example of what visited looks like initally
+        """ 4x5 grid
+        [False, False, False, False, False]
+        [False, False, False, False, False]
+        [False, False, False, False, False]
+        [False, False, False, False, False]
+        """
+
+        # Directions for all 8 neighboring cells
+        directions = [
+            (-1, -1), (-1, 0), (-1, 1),
+            (0, -1), (0, 0), (0, 1),
+            (1, -1),  (1, 0), (1, 1)
+        ]
+
+        def dfs(r, c):
+            """Depth-first search to mark connected cells."""
+            stack = [(r, c)]
+            while stack:
+                x, y = stack.pop()
+                for dx, dy in directions:
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < rows and 0 <= ny < cols:
+                        if not visited[nx][ny] and self.grid[nx][ny] != 0:
+                            visited[nx][ny] = True
+                            stack.append((nx, ny))
+
+        # Iterate over all cells
+        for i in range(rows):
+            for j in range(cols):
+                if self.grid[i][j] != 0 and not visited[i][j]:
+                    visited[i][j] = True
+                    dfs(i, j)
+                    region_count += 1
+
+        return region_count
 
     def numHingers(self):
         """
@@ -109,10 +145,12 @@ def tester():
 
     active_hingers = sa.numHingers()
     print("Active Hingers on Board: ",active_hingers)
-
+    print("Active Regions:", sa.numRegions())
     # for next_state in sa.moves():
     #     print(next_state)
     #     print("\n")
+
+
 
 if __name__ == "__main__":
     tester()

@@ -12,6 +12,9 @@ class Agent:
     def move(self, state, mode):
         return None
     
+    def minimax(self):
+        pass
+    
 def tester():
     pass
 
