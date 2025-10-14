@@ -124,7 +124,7 @@ class State:
     def getPositions(self, value=None):
         """
         Return all positions of a given value in the grid.
-        If value is 0 (None), return all non-zero positions
+        If value is None, return all non-zero positions.
         """
         positions = []
         for i, row in enumerate(self.grid):
@@ -132,8 +132,8 @@ class State:
                 if value is None:
                     if cell != 0:
                         positions.append((i, j))
-                    else:
-                        positions.append((i,j))
+                elif cell == value:
+                    positions.append((i, j))
         return positions
 
     
@@ -141,15 +141,31 @@ class State:
 
 def tester():
     sa = State(None)  # random board with 5–15 active cells
+    print("Initial State:")
     print(sa)
 
+    # Test numHingers
     active_hingers = sa.numHingers()
-    print("Active Hingers on Board: ",active_hingers)
-    print("Active Regions:", sa.numRegions())
-    # for next_state in sa.moves():
-    #     print(next_state)
-    #     print("\n")
+    print("Active Hingers on Board:", active_hingers)
 
+    # Test numRegions
+    active_regions = sa.numRegions()
+    print("Active Regions:", active_regions)
+
+    # Test moves
+    print("\nPossible Moves:")
+    for next_state in sa.moves():
+        print(next_state)
+        print("\n")
+
+    # Test getPositions
+    print("\nPositions of non-zero cells:", sa.getPositions())
+    print("Positions of cells with value 1:", sa.getPositions(1))
+
+    # Test fillGrid
+    print("\nTesting fillGrid:")
+    sa.fillGrid(10, 5)
+    print(sa)
 
 
 if __name__ == "__main__":
