@@ -38,12 +38,33 @@ class Agent:
                 # Evaluate the move using the Minimax algorithm with a depth limit of 3
                 move_value = self.minimax(child, depth=3, is_maximizing=False)
 
-                # Update the best move if the current move has a higher value
+                # Update best move if curr move is greater
                 if move_value > best_value:
                     best_value = move_value
                     best_move = child
 
-            # Return the move that leads to the best evaluated state
+            # Return best move found
+            return best_move
+        
+        # Alpha-Beta Pruning Mode
+        if mode == "alpha_beta":
+            # Initilize varbiables to track the best move and its value
+            best_move = None
+
+            # Start with the lowest possible value
+            best_value = float('-inf')
+
+            # Iterate through all possible moves from the current sttate
+            for child in state.moves():
+                # Evaluate the move using the Alpha-Beta Pruning algorithm with a depth limit of 3
+                move_value = self.alphabeta(child, depth=3, alpha=float('-inf'), beta=float('inf'), is_maximizing=False)
+
+                # Update best move if curr move is greater
+                if move_value > best_value:
+                    best_value = move_value
+                    best_move = child
+
+            # Return best move found
             return best_move
     
     def minimax(self, state, depth, is_maximizing):
@@ -55,18 +76,36 @@ class Agent:
         if depth == 0 or not list(state.moves()):  # Terminal state or max depth
             return state.numHingers() - state.numRegions()  # Example evaluation function
 
+        # Turn of Maximizing player
         if is_maximizing:
             max_eval = float('-inf')
+
+            # Iterate through all children states
             for child in state.moves():
+                # recusive call to minimax
                 eval = self.minimax(child, depth - 1, False)
+
+                # update the maximum evaluation
                 max_eval = max(max_eval, eval)
             return max_eval
         else:
+            # Turn of Minimising Player
             min_eval = float('inf')
+
+            # Iterate through all children states
             for child in state.moves():
+                # Recurisve call to minimax
                 eval = self.minimax(child, depth - 1, True)
+                # Update the minimum evaluation
                 min_eval = min(min_eval, eval)
             return min_eval
+        
+    def alphabeta(self, state, depth, alpha, beta, is_maximizing):
+        """
+            Alpha-Beta Pruning algorithm
+            An optimized version of Minimax that eliminates branches in the game tree that won't be selected
+        """
+
     
 def tester():
 
