@@ -1,5 +1,5 @@
 from a1_state import State
-
+import time
 # Agent = Architecture + Program
 
 class Agent:
@@ -105,8 +105,46 @@ class Agent:
             Alpha-Beta Pruning algorithm
             An optimized version of Minimax that eliminates branches in the game tree that won't be selected
         """
+        if depth == 0 or not list(state.moves()):  # Terminal state or max depth
+            return state.numHingers() - state.numRegions()  # Example evaluation function
 
-    
+        # Turn of Maximizing player
+        if is_maximizing:
+            max_eval = float('-inf')
+
+            # Iterate through all children states
+            for child in state.moves():
+                # recusive call to minimax
+                eval = self.alphabeta(child, depth - 1, alpha, beta, False)
+
+                # update the maximum evaluation
+                max_eval = max(max_eval, eval)
+
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break  # Beta cut-off
+            return max_eval
+        else:
+            # Turn of Minimising Player
+            min_eval = float('inf')
+
+            # Iterate through all children states
+            for child in state.moves():
+                # Recurisve call to minimax
+                eval = self.alphabeta(child, depth - 1,alpha, beta, True)
+                # Update the minimum evaluation
+                min_eval = min(min_eval, eval)
+
+                beta = min(beta, eval)
+            return min_eval
+
+def time_strategy(agent, state, mode):
+    start_time = time.time()
+    next_state = agent.move(state, mode)
+    end_time = time.time()
+    elapsed = end_time - start_time
+    return next_state, elapsed
+
 def tester():
 
     """
@@ -117,25 +155,38 @@ def tester():
     print("Testing Agent class...")
 
     # Create a random initial state
-    initial_state = State(None)
+    state1 = State(None)
     print("Initial State:")
-    print(initial_state)
+    print(state1)
 
-    # Create an agent with the minimax mode
-    agent = Agent(state=initial_state, modes=["minimax"], name="TestAgent")
+    # Create an agent with the modes implemented
+    agent = Agent(state=state1, modes=["minimax", "alpha_beta"], name="TestAgent")
     print("\nAgent Details:")
     print(agent)
 
-    # Test the minimax method by making a move
-    print("\nTesting Minimax Move:")
-    next_state = agent.move(initial_state, "minimax")
-    print("Next State:")
-    print(next_state)
+    # ------------------------------------------------------------------------------
 
-    # Validate the evaluation function
-    print("\nEvaluation of Initial State:")
-    evaluation = agent.minimax(initial_state, depth=3, is_maximizing=True)
-    print(f"Evaluation Score: {evaluation}")
+    # Scenario 2: Compare move outcome and time between modes
+    print("\n--- Scenario: Performance Comparison | Move Outcome & Time Taken ---")
+
+    # Utilise time_strategy function
+    next_state_minimax, t_minimax = time_strategy(agent, state1, "minimax")
+    next_state_alpha, t_alpha = time_strategy(agent, state1, "alpha_beta")
+
+    print("Minimax Move:\n", next_state_minimax)
+    print(f"⏱️ Minimax took {t_minimax:.4f}s")
+
+    print("\nAlpha-Beta Move:\n", next_state_alpha)
+    print(f"⏱️ Alpha-Beta took {t_alpha:.4f}s")
+
+    # Check if they produced the same result (optional)
+    if str(next_state_minimax) == str(next_state_alpha):
+        print("-> Both strategies chose the same move.")
+    else:
+        print("-> Strategies produced different moves.")
+
+    # ------------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     tester()
