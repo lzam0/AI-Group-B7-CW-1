@@ -50,3 +50,4 @@ def path_astar(start,end):
 
 
 def tester():
+    pass
