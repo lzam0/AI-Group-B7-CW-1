@@ -1,10 +1,5 @@
 """
-a4_game.py
-Core gameplay loop for the Hinger game.
-
 Authors: [Your group ID + student IDs]
-Module: CMP-6058A / 7058A Artificial Intelligence
-Task 4: Implement the game loop between two agents or a human player.
 """
 
 from a1_state import State
@@ -15,10 +10,10 @@ def play(state, agentA, agentB):
     Simulates a full Hinger game between two players.
     Parameters:
         state (State): The starting game state (grid of counters).
-        agentA (Agent or None): Player A (None = human).
-        agentB (Agent or None): Player B (None = human).
+        agentA : Player A (None = human).
+        agentB : Player B (None = human).
     Returns:
-        str: The name of the winner, or None if draw.
+        The name of the winner, or None if draw.
     """
 
     current_agent = agentA
@@ -84,22 +79,23 @@ def play(state, agentA, agentB):
             print(state)
             return current_agent.name if current_agent else "Human"
 
-        # --- Step 6: Switch players ---
+        # Step 6: Switch players and continue
         current_agent, other_agent = other_agent, current_agent
         turn += 1
 
 
 def tester():
-    """Simple test run for play() with two AI agents."""
+    "Simple test run for play() with two AI agents."
     grid = [
-        [2, 1, 0],
-        [1, 2, 0],
-        [0, 0, 0]
+        [2, 1, 0, 1, 0],
+        [1, 2, 1, 1, 1],
+        [0, 0, 0, 1, 1],
+        [1, 1, 1, 0, 0]
     ]
     state = State(grid)
 
-    agentA = Agent(size=(3, 3), name="Agent A")
-    agentB = Agent(size=(3, 3), name="Agent B")
+    agentA = Agent(size=(4, 5), name="Agent A")
+    agentB = Agent(size=(4, 5), name="Agent B")
 
     winner = play(state, agentA, agentB)
     print(f"\nGame Over! Winner: {winner}")
