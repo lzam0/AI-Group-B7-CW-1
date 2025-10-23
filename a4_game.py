@@ -25,7 +25,7 @@ def play(state, agentA, agentB):
     other_agent = agentB
     turn = 0
 
-    print("🎮 Starting Hinger game!")
+    print("Starting Hinger game!")
     print("Initial state:")
     print(state)
 
@@ -33,15 +33,15 @@ def play(state, agentA, agentB):
         print(f"\nTurn {turn + 1}: {current_agent.name if current_agent else 'Human'}'s turn")
         print(state)
 
-        # --- Step 1: Check if any counters are left ---
+        # Step 1: Check if any counters are left 
         active_cells = [(i, j) for i in range(len(state.grid))
                         for j in range(len(state.grid[0]))
                         if state.grid[i][j] > 0]
         if not active_cells:
-            print("No counters left — it's a draw!")
+            print("No counters left - draw")
             return None
 
-        # --- Step 2: Ask current player for move ---
+        # Step 2: Ask current player for move
         if current_agent is None:
             # Human player
             try:
@@ -57,14 +57,14 @@ def play(state, agentA, agentB):
 
         i, j = move
 
-        # --- Step 3: Validate the move ---
+        # Step 3: Validate the move 
         if i < 0 or i >= len(state.grid) or j < 0 or j >= len(state.grid[0]):
-            print("❌ Invalid move — out of bounds!")
+            print("Invalid move — out of bounds!")
             print(f"{other_agent.name if other_agent else 'Human'} wins!")
             return other_agent.name if other_agent else "Human"
 
         if state.grid[i][j] == 0:
-            print("❌ Invalid move — cell already empty!")
+            print("Invalid move — cell already empty!")
             print(f"{other_agent.name if other_agent else 'Human'} wins!")
             return other_agent.name if other_agent else "Human"
 
