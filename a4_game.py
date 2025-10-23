@@ -59,29 +59,28 @@ def play(state, agentA, agentB):
 
         # Step 3: Validate the move 
         if i < 0 or i >= len(state.grid) or j < 0 or j >= len(state.grid[0]):
-            print("Invalid move — out of bounds!")
-            print(f"{other_agent.name if other_agent else 'Human'} wins!")
+            print("Invalid move")
+            print(f"{other_agent.name if other_agent else 'Human'} wins...")
             return other_agent.name if other_agent else "Human"
 
         if state.grid[i][j] == 0:
-            print("Invalid move — cell already empty!")
-            print(f"{other_agent.name if other_agent else 'Human'} wins!")
+            print("Invalid move — cell contains no current counters")
+            print(f"{other_agent.name if other_agent else 'Human'} wins...")
             return other_agent.name if other_agent else "Human"
 
-        # --- Step 4: Check if move is on a hinger cell ---
+        # Step 4: Check if move is on a hinger cell and perform the move
         before_regions = state.numRegions()
         before_hingers = state.numHingers()
 
-        # Perform the move: remove one counter
         state.grid[i][j] -= 1
 
         after_regions = state.numRegions()
         after_hingers = state.numHingers()
 
-        # --- Step 5: Check if this move hits a hinger ---
+        # Step 5: Check if this move hits a hinger 
         # A "hinger" move increases the number of active regions
         if after_regions > before_regions:
-            print(f"🏆 {current_agent.name if current_agent else 'Human'} made a hinger move and wins!")
+            print(f"{current_agent.name if current_agent else 'Human'} found the hinger and wins...")
             print(state)
             return current_agent.name if current_agent else "Human"
 
