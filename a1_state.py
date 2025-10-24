@@ -7,7 +7,7 @@ class State:
 
         if grid is None:
             self.grid = [[0 for _ in range(5)] for _ in range(4)] # Create a 4x5 grid of zeros
-            self.fillGrid((random.randint(5,15)))  # fill the grid with 5-15 active cells
+            self.fillGrid((random.randint(8,15)))  # fill the grid with 8-15 active cells
         else:
             self.grid = grid
 
