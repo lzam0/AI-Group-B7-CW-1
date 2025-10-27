@@ -67,12 +67,21 @@ class State:
         def dfs(r, c):
             """Depth-first search to mark connected cells."""
             stack = [(r, c)]
-            while stack:
+
+            # Iterate through the stack
+            while stack: 
+                # Pop the last element
                 x, y = stack.pop()
+
+                # check all 8 directions
                 for dx, dy in directions:
+                    # New coordinates
                     nx, ny = x + dx, y + dy
+
+                    # check the bounds and if they haven't been visisted
                     if 0 <= nx < rows and 0 <= ny < cols:
                         if not visited[nx][ny] and self.grid[nx][ny] != 0:
+                            # if they have been visited, append them to stack and mark as visted
                             visited[nx][ny] = True
                             stack.append((nx, ny))
 
@@ -81,6 +90,7 @@ class State:
             for j in range(cols):
                 if self.grid[i][j] != 0 and not visited[i][j]:
                     visited[i][j] = True
+                    # utilise DFS iterative approach to mark all connected cells
                     dfs(i, j)
                     region_count += 1
 
