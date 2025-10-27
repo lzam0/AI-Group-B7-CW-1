@@ -1,3 +1,25 @@
+"""
+a1_state.py
+
+Author: Leihl Zambrano
+Student ID: 100385659
+Creation Date: 29th September 2025
+Last Modified: 9th October 2025
+
+Description:
+    This module defines the State class for the Hingers game. It represents the game 
+    board and provides functionality for generating moves, evaluating active regions,
+    counting active "hingers", and filling the board with initial random values.
+
+Classes:
+    State: Represents the game board, handles move generation, and computes metrics such
+            as active regions and hingers.
+
+Functions:
+    tester(): Demonstrates the functionality of the State class including moves, 
+              regions, hingers, and board filling.
+
+"""
 from typing import List, Tuple, Generator
 import copy
 import random
