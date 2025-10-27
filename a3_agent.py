@@ -30,6 +30,24 @@ class Agent:
 
         # Get current number of regions
         current_regions = state.numRegions()
+
+        if mode.lower() == "monte_carlo":
+            best_move = self.monte_carlo(state, simulations=100)
+            # If the best move creates a new region, return it immediately
+            if best_move.numRegions() < state.numRegions():
+                return state
+
+            return best_move
+        
+        elif mode.lower() == "monte_carlo_advanced":
+            best_move = self.monte_carlo_advanced(state, simulations=100)
+            # If the best move creates a new region, return it immediately
+            if best_move.numRegions() < state.numRegions():
+                return state
+
+            return best_move
+        
+        # For minimax and alpha-beta pruning strategies
         best_move = None
         best_value = float('-inf')
 
@@ -46,9 +64,10 @@ class Agent:
                 value = self.alphabeta(child, depth=search_depth, alpha=float('-inf'), beta=float('inf'),
                                     is_maximizing=False, parent_state=state)
             # Minimax Strategy
-            if mode.lower() == "minimax":
+            elif mode.lower() == "minimax":
                 value = self.minimax(child, depth=search_depth, is_maximizing=False, parent_state=state)
-            else:
+
+            else: # Ideally it will be the human player
                 raise ValueError(f"Unknown mode '{mode}'")
             
             # If this move creates a new region, return it immediately
@@ -73,7 +92,12 @@ class Agent:
         Evaluation function that rewards new region creation and penalizes hingers.
         """
         regions = state.numRegions()
-        parent_regions = parent_state.numRegions() if parent_state else 0
+        
+        if parent_state:
+            parent_regions = parent_state.numRegions()
+        else:
+            parent_regions = 0
+
         hingers = state.numHingers()
 
         # Reward *new* region creation more strongly
@@ -136,7 +160,7 @@ class Agent:
             # Iterate through all ordered children states
             for child in ordered_children:
 
-                # recusive call to alphabeta pruning strategy
+                # Max Turn: recusive call to alphabeta pruning strategy
                 eval = self.alphabeta(child, depth-1, alpha, beta, False, parent_state=state)
 
                 # update the maximum evaluation
@@ -155,13 +179,13 @@ class Agent:
             # Iterate through all ordered children states
             for child in ordered_children:
 
-                 # recusive call to alphabeta pruning strategy
+                 # Min Turn: recursive call to alphabeta pruning strategy
                 eval = self.alphabeta(child, depth-1, alpha, beta, True, parent_state=state)
 
                 # update the minimum evaluation
                 min_eval = min(min_eval, eval)
                 
-                # Update alpha value for pruning
+                # Update beta value for pruning
                 beta = min(beta, eval)
 
                 # Cuts off the remaining branches when the outcome won't get affected
@@ -169,11 +193,92 @@ class Agent:
                     break
             return min_eval
 
-    def monte_carlo(self, state, simulations=100):
+    def monte_carlo(self, state, simulations, max_depth=10):
         """
         Monte Carlo Tree Search (MCTS) algorithm
+        Performs random simulations to evaluate the potential of moves.
         """
-        pass
+        # Get all possible moves
+        possible_moves = list(state.moves())
+
+        # if no possible moves, return current state
+        if not possible_moves:
+            return state
+    
+        move_scores = {}
+
+        # Perform simulations for each move
+        for move in possible_moves:
+            total_score = 0
+            for _ in range(simulations):
+                # simulate a radnom playout from the move
+                total_score += self.simulate_random_playout(move, max_depth)
+
+                # Accumulate scores by obtaining the average
+                move_scores[move] = total_score / simulations
+
+
+        # Pick the move with the highest average score
+        best_move = max(move_scores, key=move_scores.get)
+
+        # Prevent Monte Carlo from picking a move that reduces active regions
+        if best_move.numRegions() < state.numRegions():
+            return state 
+    
+        return best_move
+    
+    def monte_carlo_advanced(self,state, simulations, max_depth=10):
+        """
+        An advanced version of Monte Carlo Tree Search (MCTS) algorithm.
+        Utilising ordered moves to prioritise promising paths.
+        Should end up being faster and more efficient compared to current monte_carlo method.
+        """
+        # Get all possible moves in ORDER
+        possible_moves = self.ordered_moves(state)
+
+        # if no possible moves, return current state
+        if not possible_moves:
+            return state
+    
+        move_scores = {move: 0 for move in possible_moves}
+
+        # Perform simulations for each move
+        for move in possible_moves:
+            total_score = 0
+            for _ in range(simulations):
+                # simulate a radnom playout from the move
+                total_score += self.simulate_random_playout(move, max_depth)
+
+                # Accumulate scores by obtaining the average
+                move_scores[move] = total_score / simulations
+
+
+        # Pick the move with the highest average score
+        best_move = max(move_scores, key=move_scores.get)
+
+        # Prevent Monte Carlo from picking a move that reduces active regions
+        if best_move.numRegions() < state.numRegions():
+            return state 
+    
+        return best_move
+
+    def simulate_random_playout(self, state, max_depth=10):
+        """
+        Simulates a random playout from the given state until the end or max depth.
+        Returns a score based on the final state's evaluation.
+        """
+        current_state = state
+        depth = 0
+
+        # Play randomly until no moves left or depth reached
+        while list(current_state.moves()) and depth < max_depth:
+            # pick a random move from available moves
+            current_state = random.choice(list(current_state.moves()))
+            depth += 1
+
+        # Use your existing evaluation function
+        return self.evaluate(current_state, parent_state=state)
+
 
 # Function for timing the agent's move
 def time_strategy(agent, state, mode):
@@ -198,10 +303,10 @@ def tester():
     print(f"Initial number of regions: {initial_regions}\n")
 
     # Create an agent
-    agent = Agent(state=state1, modes=["minimax", "alpha_beta"], name="")
+    agent = Agent(state=state1, modes=["minimax", "alpha_beta", "monte_carlo", "monte_carlo_advanced"], name="")
     print(agent)
 
-    mode = "minimax"
+    mode = "monte_carlo_advanced"
     current_state = state1
     move_count = 0
 
@@ -228,9 +333,6 @@ def tester():
         current_state = next_state
 
     print(f"\nTotal moves made until a new region was created: {move_count}")
-
-
-
 
 if __name__ == "__main__":
     tester()
