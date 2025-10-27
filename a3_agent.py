@@ -198,14 +198,17 @@ def tester():
     print(f"Initial number of regions: {initial_regions}\n")
 
     # Create an agent
-    agent = Agent(state=state1, modes=["minimax", "alpha_beta"], name="TestAgent")
+    agent = Agent(state=state1, modes=["minimax", "alpha_beta"], name="")
+    print(agent)
 
     mode = "minimax"
     current_state = state1
     move_count = 0
 
+    # Keep making moves until a new region is created
     while current_state.numRegions() <= initial_regions:
         next_state, elapsed = time_strategy(agent, current_state, mode)
+        print(f"Evaluating move using {mode} strategy")
         move_count += 1
 
         print(f"\nMove {move_count}:")
@@ -214,12 +217,12 @@ def tester():
 
         # Stop if the move increases the number of regions
         if next_state.numRegions() > initial_regions:
-            print("\n✅ A new active region has been created!")
+            print("\n--- A new active region has been created! ---")
             break
 
         # Stop if no further progress is possible
         if str(next_state) == str(current_state):
-            print("\n⚠️ No further progress possible. Stopping.")
+            print("\n--- No further progress possible. Stopping. ---")
             break
 
         current_state = next_state
