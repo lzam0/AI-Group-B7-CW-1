@@ -1,4 +1,4 @@
-#Artificial Intelligence Assignment
+# Artificial Intelligence Assignment
 ## AI Hinger Game
 
 ### Overview
