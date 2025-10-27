@@ -304,18 +304,65 @@ class Agent:
         # Use your existing evaluation function
         return self.evaluate(current_state, parent_state=state)
 
-
-# Function for timing the agent's move
 def time_strategy(agent, state, mode):
+    """Timing strategies move time"""
+    # utilise time library time
     start_time = time.time()
+
+    # agent move operation
     next_state = agent.move(state, mode)
+
+    # end timer
     end_time = time.time()
+
+    # calculate time taken
     elapsed = end_time - start_time
     return next_state, elapsed
 
 def test_all_strategies():
     """Demonstrates all strategies implemented"""
-    pass
+    print("Demonstrating all strategies to compare to each other\n")
+
+    start_board = State(None)
+    print("Initial State:")
+    print(start_board)
+    initial_regions = start_board.numRegions()
+    print(f"Initial number of regions: {initial_regions}\n")
+
+    # Create an agent
+    agent = Agent(state=start_board, modes=["minimax", "alpha_beta", "monte_carlo", "hybrid"], name="Strategy Testing")
+    print(agent)
+
+    strategies = ["minimax", "alpha_beta", "monte_carlo", "hybrid"]
+
+    # Iterate through all strategies
+    for mode in strategies:
+        print(f"--- Testing {mode} ---")
+        current_state = start_board
+        move_count = 0
+
+        # iterate through the board until loop broken
+        while current_state.numRegions() <= initial_regions:
+            next_state, elapsed = time_strategy(agent, current_state, mode)
+            move_count += 1
+
+            print(f"Move {move_count}: Regions: {next_state.numRegions()} | Time: {elapsed:.4f}s")
+
+            # Stop if region count increased
+            if next_state.numRegions() > initial_regions:
+                print(f"SUCCESS: {mode} created a new region in {move_count} move(s)!\n")
+                break
+
+            # Stop if no further progress
+            if str(next_state) == str(current_state):
+                print(f"STOPPED: {mode} cannot make further progress.\n")
+                break
+
+            current_state = next_state
+
+        # If none created new regions
+        if current_state.numRegions() < initial_regions:
+            print(f"FAILED: {mode} did not create a new region.\n")
 
 def tester():
     """
@@ -365,4 +412,5 @@ def tester():
     print(f"\nTotal moves made until a new region was created: {move_count}")
 
 if __name__ == "__main__":
-    tester()
+    test_all_strategies()
+    # tester()
