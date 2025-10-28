@@ -152,7 +152,35 @@ def path_IDDFS(start, end):
                 visited.add(neighbor)
                 queue.append((neighbor, path + [neighbor]))
     return None
-    
+
+# Test Harness for IDDFS
+def test_path_IDDFS():
+    grid_start = [
+        [2, 0, 0, 0, 0],
+        [0, 3, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0]
+    ]
+
+    grid_end = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ]
+
+    start_state = State(grid_start)
+    end_state = State(grid_end)
+
+    path = path_IDDFS(start_state, end_state)
+
+    if path is None:
+        print("No safe path found.")
+    else:
+        print(f"IDDFS Path found in {len(path) - 1} moves!")
+        for step, state in enumerate(path):
+            print(f"\nStep {step}:")
+            print(state)
 
 def path_astar(start,end):
     import heapq
@@ -186,6 +214,37 @@ def path_astar(start,end):
 
     return None
 
+
+# Test Harness for A*
+
+def test_path_ASTAR():
+    grid_start = [
+        [2, 0, 0, 0, 0],
+        [0, 3, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0]
+    ]
+
+    grid_end = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ]
+
+    start_state = State(grid_start)
+    end_state = State(grid_end)
+
+    path = path_astar(start_state, end_state)
+
+    if path is None:
+        print("No safe path found.")
+    else:
+        print(f"A* Path found in {len(path) - 1} moves!")
+        for step, state in enumerate(path):
+            print(f"\nStep {step}:")
+            print(state)
+
 # =============================================================================================
 
 # Run tests    
@@ -194,3 +253,7 @@ if __name__ == "__main__":
     test_path_BFS()
     print("\n~ DFS Test ~")
     test_path_DFS()
+    print("\n~ IDDFS Test ~")
+    test_path_IDDFS()
+    print("\n~ A* Test ~")
+    test_path_ASTAR()
