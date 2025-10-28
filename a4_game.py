@@ -180,7 +180,7 @@ def main():
 
     # You can set either agent to None for human play
     agentA = None
-    agentB = Agent(size=(4, 5), name="Agent B")
+    agentB = Agent(state=state, modes=["minimax", "alpha_beta", "monte_carlo", "hybrid"], name="Agent B")
 
   
     # Start the game session
