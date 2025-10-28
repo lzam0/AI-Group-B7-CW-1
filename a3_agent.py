@@ -1,30 +1,11 @@
 """
-a3_agent.py
+Hinger Project
+Coursework 001 for: CMP-6058A Artificial Intelligence
 
-Author: Leihl Zambrano
-Student ID: 100385659
-Creation Date: 29th September 2025
-Last Modified: 27th October 2025
+Includes a Agent class for Task 3
 
-Description:
-    This module defines the Agent class used for decision-making in the Hingers game.
-    The Agent supports multiple strategies including:
-        - Minimax
-        - Alpha-Beta Pruning
-        - Monte Carlo Tree Search (MCTS)
-        - Hybrid (combination of Alpha-Beta and Monte Carlo)
-
-    The Agent interacts with a State object (from a1_state.py), generating moves and
-    evaluating board states based on active regions and hingers.
-
-Classes:
-    Agent: Implements the game-playing agent with evaluation, move selection, and search strategies.
-
-Functions:
-    time_strategy(agent, state, mode): Measures execution time of a move by the agent.
-    test_all_strategies(): Demonstrates all strategies and compares their performance.
-    tester(): Continuously plays moves until a new active region is created.
-
+@author: B7 (100385659, 5678, and 89123)
+@date:   29/09/2025
 """
 
 from a1_state import State

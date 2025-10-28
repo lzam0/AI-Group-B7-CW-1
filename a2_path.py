@@ -1,3 +1,13 @@
+"""
+Hinger Project
+Coursework 001 for: CMP-6058A Artificial Intelligence
+
+Includes functions for algorithm pathways
+
+@author: B7 (100385659, 5678, and 89123)
+@date:   29/09/2025
+"""
+
 from collections import deque
 from typing import List, Optional
 from copy import deepcopy
