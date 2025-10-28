@@ -396,7 +396,6 @@ def test_min_safe():
         for step, state in enumerate(path):
             print(f"Step {step}:")
             print(state)
-            print()
 
 def compare():
     """
@@ -462,7 +461,8 @@ def compare():
         "BFS": path_BFS,
         "DFS": path_DFS,
         "IDDFS": path_IDDFS,
-        "A*": path_astar
+        "A*": path_astar,
+        "Min Safe": min_safe
     }
 
     # Record times for each algorithm
@@ -524,17 +524,20 @@ def compare():
 def tester():
     print("=== Testing Algorithms ===")
 
-    print("\n~ BFS Test ~")
-    test_path_BFS()
+    # print("\n~ BFS Test ~")
+    # test_path_BFS()
 
-    print("\n~ DFS Test ~")
-    test_path_DFS()
+    # print("\n~ DFS Test ~")
+    # test_path_DFS()
 
-    print("\n~ IDDFS Test ~")
-    test_path_IDDFS()
+    # print("\n~ IDDFS Test ~")
+    # test_path_IDDFS()
 
-    print("\n~ A* Test ~")
-    test_path_astar()
+    # print("\n~ A* Test ~")
+    # test_path_astar()
+    
+    print("\n~ Min Safe Test ~")
+    test_min_safe()
 
     print("\n=== All tests completed ===")
 
@@ -542,4 +545,5 @@ def tester():
 # Run tests
  
 if __name__ == "__main__":
+    # tester()
     compare()
