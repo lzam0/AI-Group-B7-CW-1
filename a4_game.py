@@ -1,5 +1,5 @@
 """
-Authors: [Your group ID + student IDs]
+Authors: [100464]
 """
 
 import pygame
@@ -53,7 +53,7 @@ def play(state, agentA, agentB):
             screen.fill(background)
             draw_board(screen, state, font)
             draw_text(screen, f"Turn: {turn+1}", 20, height - 60, font)
-            draw_text(screen, f"Turn {turn + 1}: {current_agent.name if current_agent else 'Human'}'s turn", 20, 20, font)
+            draw_text(screen, f"Turn {turn + 1}: {current_agent.name if current_agent else 'Human'}'s turn", 10, 40, font)
             pygame.display.set_caption(f"Hinger Game - Turn {turn+1}")
 
             pygame.display.flip()
@@ -102,7 +102,7 @@ def play(state, agentA, agentB):
                                     turn += 1
                         break
 
-            # --- Handle AI player ---
+            # Handle AI player
             if current_agent is not None:
                     pygame.time.delay(500)
                     new_state = current_agent.move(state, mode=current_agent.mode)
@@ -115,18 +115,19 @@ def play(state, agentA, agentB):
                     after_regions = new_state.numRegions()
 
                     if after_regions > before_regions:
-                        print(f"{current_agent.name} found the hinger and wins!")
+                        print(f"{current_agent.name} found the hinger and wins...")
                         winner = current_agent.name
                         running = False
                     else:
-                        state = new_state  # ✅ update to AI’s new board
+                        state = new_state  #update to AI’s new board
                         current_agent, other_agent = other_agent, current_agent
                         turn += 1
-                        clock.tick(30)
+                        clock.tick(30)  # save CPU resources
                         
 
         except Exception as e:
             print(f"Error occurred: {e}")
+            pygame.time.wait(2000)
         # End of game display
     end_screen(screen, winner, font)
     pygame.quit()
@@ -140,7 +141,7 @@ def draw_board(screen, state, font):
          for j in range(len(state.grid[0])):
             value = state.grid[i][j]
             x = MARGIN + j * (CELL_SIZE + MARGIN)
-            y = MARGIN + i * (CELL_SIZE + MARGIN)
+            y = 90 + MARGIN + i * (CELL_SIZE + MARGIN)
             color = EMPTY_COLOR if value == 0 else ACTIVE_COLOR
             
             pygame.draw.rect(screen, color, (x, y, CELL_SIZE, CELL_SIZE), border_radius=8)
@@ -181,20 +182,26 @@ def select_mode_pygame(screen, font, agent):
     modes = ["minimax", "alpha_beta", "monte_carlo", "hybrid"]
     selected_mode = None
     running = True
+    clock = pygame.time.Clock()
 
     while running:
-        screen.fill((20, 20, 20))
-        title = font.render("Select AI Mode:", True, (255, 255, 255))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        screen.fill((180, 180, 180))
+        title = font.render("Select AI Mode:", True, (20, 20, 20))
         screen.blit(title, (100, 80))
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
         for i, mode in enumerate(modes):
-            color = (200, 200, 200)
-            rect = pygame.Rect(100, 150 + i * 60, 250, 50)
+            color = (240, 240, 240)
+            rect = pygame.Rect(100, 150 + i * 70, 250, 50)
 
-            # highlight if hovered
+            # Highlight hover
             if rect.collidepoint(mouse_pos):
                 color = (100, 180, 255)
                 if mouse_click:
@@ -203,12 +210,12 @@ def select_mode_pygame(screen, font, agent):
                     running = False
 
             pygame.draw.rect(screen, color, rect, border_radius=8)
-            text = font.render(mode, True, (0, 0, 0))
+            text = font.render(mode, True, (60, 60, 60))
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
         pygame.display.flip()
-        pygame.time.Clock().tick(30)
+        clock.tick(30)
 
     print(f"Selected mode: {selected_mode}")
 
@@ -251,9 +258,11 @@ def main():
     agentB = Agent(state=state, modes=["minimax", "alpha_beta", "monte_carlo", "hybrid"], name="Agent B")
 
     select_mode_pygame(screen, font, agentB)
-    #select_mode(agentB)
+    #select_mode(agentB) commented out to avoid console input during pygame run. But can be used for non-pygame testing.
 
-  
+    pygame.event.clear()
+    pygame.time.wait(300)
+
     # Start the game session
     play(state, agentA, agentB)
     
