@@ -524,17 +524,17 @@ def compare():
 def tester():
     print("=== Testing Algorithms ===")
 
-    # print("\n~ BFS Test ~")
-    # test_path_BFS()
+    print("\n~ BFS Test ~")
+    test_path_BFS()
 
-    # print("\n~ DFS Test ~")
-    # test_path_DFS()
+    print("\n~ DFS Test ~")
+    test_path_DFS()
 
-    # print("\n~ IDDFS Test ~")
-    # test_path_IDDFS()
+    print("\n~ IDDFS Test ~")
+    test_path_IDDFS()
 
-    # print("\n~ A* Test ~")
-    # test_path_astar()
+    print("\n~ A* Test ~")
+    test_path_astar()
     
     print("\n~ Min Safe Test ~")
     test_min_safe()
