@@ -468,6 +468,12 @@ def compare():
     # Record times for each algorithm
     times = {name: [] for name in search_algorithms.keys()}
 
+    times = {name: [] for name in search_algorithms.keys()}
+    correctness = {name: [] for name in search_algorithms.keys()}
+
+    def grids_equal(grid1, grid2):
+        return all(row1 == row2 for row1, row2 in zip(grid1, grid2))
+
     for i, (start_grid, goal_grid) in enumerate(test_cases, start=1):
         start_state = State(start_grid)
         goal_state = State(goal_grid)
@@ -478,22 +484,29 @@ def compare():
         print("\nGoal Grid:")
         print(goal_state)
 
+        # Iterate through serach algorithms
         for name, func in search_algorithms.items():
+            # Time taken
             start_time = time.time()
-            result = func(start_state, goal_state)
+            path = func(start_state, goal_state)
             elapsed_time = time.time() - start_time
-            # If algorithm exceeds 20 seconds, stop and mark as >20
+
+            # If elasped time of the pathway takes more than 20 seconds
             if elapsed_time > 20:
                 print(f"{name} exceeded 20 seconds, skipping further execution.")
-                times[name].append(20.1)  # Use 20.1 to indicate it exceeded
-            else:
+                times[name].append(20.1)
+                correctness[name].append(False)
+            else: # If pathway takes less than 20 seconds
                 times[name].append(elapsed_time)
+                if path is not None and grids_equal(path[-1].grid, goal_state.grid):
+                    correctness[name].append(True)
+                else:
+                    correctness[name].append(False)
                 print(f"{name} took {elapsed_time:.6f} seconds")
 
-    # Compute averages (ignoring values >20 for realistic average if desired)
+    # Compute averages (ignoring times >20s for realistic average)
     avg_times = {}
     for name, lst in times.items():
-        # Compute average, treating >20 as 20 for average
         adjusted = [min(t, 20) for t in lst]
         avg_times[name] = sum(adjusted) / len(adjusted)
 
@@ -507,11 +520,16 @@ def compare():
 
     for name, lst in times.items():
         plt.plot(test_labels, lst, marker='o', label=name)
+        # Highlight incorrect paths with a red 'x'
+        incorrect_indices = [idx for idx, correct in enumerate(correctness[name]) if not correct]
+        plt.scatter([test_labels[idx] for idx in incorrect_indices],
+                    [lst[idx] for idx in incorrect_indices],
+                    color='red', marker='x', s=100, zorder=5)
 
     for name, avg in avg_times.items():
         plt.hlines(avg, xmin=0, xmax=len(test_cases)-1, colors='gray', linestyles='dashed', alpha=0.5)
 
-    plt.title("Algorithm Performance Comparison")
+    plt.title("Algorithm Performance Comparison (Red X = Incorrect Path)")
     plt.xlabel("Test Cases")
     plt.ylabel("Time (seconds)")
     plt.legend()
