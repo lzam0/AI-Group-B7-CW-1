@@ -4,7 +4,7 @@ Coursework 001 for: CMP-6058A Artificial Intelligence
 
 Includes functions for algorithm pathways
 
-@author: B7 (100385659, 5678, and 89123)
+@author: B7 (100385659, 100400087, and 89123)
 @date:   29/09/2025
 """
 
