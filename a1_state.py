@@ -7,15 +7,13 @@ Includes a State class for Task 1
 @author: B7 (100385659, 100400087 and )
 @date:   29/09/2025
 """
-from typing import List, Tuple, Generator
-import copy
 import random
 
 class State:
-    def __init__(self, grid):
+    def __init__(self, grid=None, rows=4, cols=5):
 
         if grid is None:
-            self.grid = [[0 for _ in range(5)] for _ in range(4)] # Create a 4x5 grid of zeros
+            self.grid = [[0] * cols for _ in range(rows)] # Create a grid of zeros
             self.fillGrid((random.randint(8,15)))  # fill the grid with 8-15 active cells
         else:
             self.grid = grid
@@ -126,6 +124,9 @@ class State:
     
     
     def fillGrid(self, count=15, max_value=9):
+        """
+            A method fillGrid() that fills the grid (4x5) with active nodes.
+        """
         total_cells = 4*5
 
         # Ensure we do not try to fill more cells than exist in the grid
@@ -134,7 +135,9 @@ class State:
         # Choose with cells to fill randomly
         chosen_positions = random.sample(range(total_cells), count)
 
+        # Iterate through the chosen positions
         for pos in chosen_positions:
+            # row and column 
             row, col = divmod(pos, 5)
 
             # Fill the chosen cell with a random value
@@ -159,8 +162,17 @@ class State:
     
 
 def tester():
-    sa = State(None)  # random board with 5–15 active cells
-    print("Initial State:")
+    # State A from Figure 1
+    board = [
+        [1, 1, 0, 0, 2],
+        [1, 1, 0, 0, 0],
+        [0, 0, 1, 1, 1],
+        [0, 0, 0, 1, 1]
+    ]
+
+    # Create a State instance representing State A
+    sa = State(board)
+    print("State A (Figure 1):")
     print(sa)
 
     # Test numHingers
@@ -172,20 +184,20 @@ def tester():
     print("Active Regions:", active_regions)
 
     # Test moves
-    print("\nPossible Moves:")
+    print("\nPossible Moves from State A:")
     for next_state in sa.moves():
         print(next_state)
-        print("\n")
+        print()
 
     # Test getPositions
     print("\nPositions of non-zero cells:", sa.getPositions())
     print("Positions of cells with value 1:", sa.getPositions(1))
 
     # Test fillGrid
-    print("\nTesting fillGrid:")
-    sa.fillGrid(10, 5)
-    print(sa)
-
+    print("\nTesting fillGrid (random board):")
+    sb = State(None)
+    sb.fillGrid(10, 5)
+    print(sb)
 
 if __name__ == "__main__":
     tester()
