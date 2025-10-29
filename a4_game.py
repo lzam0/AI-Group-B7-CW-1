@@ -1,5 +1,11 @@
 """
-Authors: [100464021]
+Hinger Project
+Coursework 001 for: CMP-6058A Artificial Intelligence
+
+Includes a Agent class for Task 3
+
+@author: B7 (100385659, 100400087, and 100464021)
+@date:   29/09/2025
 """
 
 import pygame
@@ -77,13 +83,15 @@ def play(state, agentA, agentB):
 
             # Ask current player for move
             move = None
-        # Handle human player (if current_agent is None)      
+            # Handle human player (if current_agent is None)      
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-
+                    
+                    # when a human player clicks with mouse button
                     if current_agent is None and event.type == pygame.MOUSEBUTTONDOWN:
+                        # where user mouse cursor is
                         x, y = event.pos
                         grid_offset_y = 90  # offset for grid drawing
                         i = (y - grid_offset_y) // (CELL_SIZE + MARGIN)
