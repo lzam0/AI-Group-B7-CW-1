@@ -20,7 +20,7 @@ TEXT_COLOR = (220, 220, 220)
 
 #Constants for move history
 move_history = []
-MAX_LOGS = 2
+MAX_LOGS = 6
 
 def play(state, agentA, agentB):
     """
@@ -59,6 +59,7 @@ def play(state, agentA, agentB):
             draw_text(screen, f"Turn: {turn+1}", 20, height - 60, font)
             draw_text(screen, f"Turn {turn + 1}: {current_agent.name if current_agent else 'Human'}'s turn", 10, 40, font)
             pygame.display.set_caption(f"Hinger Game - Turn {turn+1}")
+            display_move_history(screen, font, move_history, start_x=509, start_y=150)
 
             pygame.display.flip()
             
@@ -76,8 +77,7 @@ def play(state, agentA, agentB):
 
             # Ask current player for move
             move = None
-        # --- Handle human player (if current_agent is None) ---
-        
+        # Handle human player (if current_agent is None)      
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -107,7 +107,8 @@ def play(state, agentA, agentB):
                                     winner = "Human"
                                     running = False
                                 else:
-                                    move_history.append(f"Human moved at ({i}, {j})")
+                                    move_history.append(f"Turn {turn+1}: Human moved at ({i}, {j})")
+                                    pygame.time.wait(1000)
                                     if len(move_history) > MAX_LOGS:
                                         move_history.pop(0)
                                     current_agent, other_agent = other_agent, current_agent
@@ -117,11 +118,22 @@ def play(state, agentA, agentB):
             # Handle AI player
             if current_agent is not None:
                     pygame.time.delay(500)
+                    prev_grid = [row[:] for row in state.grid]  # Copy grid before move
                     new_state = current_agent.move(state, mode=current_agent.mode)
 
                     if not isinstance(new_state, State):
                         print("AI returned invalid state; skipping turn.")
                         continue
+
+                    # Detect AI move postion by comparing old vs new grid values
+                    ai_move_coords = None
+                    for i in range(len(prev_grid)):
+                        for j in range(len(prev_grid[0])):
+                            if prev_grid[i][j] != new_state.grid[i][j]:
+                                ai_move_coords = (i, j)
+                                break
+                        if ai_move_coords:
+                            break
 
                     before_regions = state.numRegions()
                     after_regions = new_state.numRegions()
@@ -131,13 +143,23 @@ def play(state, agentA, agentB):
                         winner = current_agent.name
                         running = False
                     else:
-                        state = new_state  #update to AI’s new board
-                        move_history.append(f"{current_agent.name} moved.")
+                        state = new_state  # update to AI’s new board
+
+                        if ai_move_coords:
+                            move_history.append(f"Turn {turn+1}: {current_agent.name} moved at {ai_move_coords}")
+                        else:
+                            move_history.append(f"Turn {turn+1}: {current_agent.name}: (unknown)")
+
                         if len(move_history) > MAX_LOGS:
                             move_history.pop(0)
+
+                        
+                        pygame.time.wait(500)
+
                         current_agent, other_agent = other_agent, current_agent
                         turn += 1
-                        clock.tick(30)  # save CPU resources
+                        clock.tick(30)
+
                         
 
         except Exception as e:
@@ -187,7 +209,7 @@ def select_mode(agent):
         print(f"Selected mode: {agent.mode}")
     else:
         print("Invalid choice. Defaulting to minimax.")
-        agent.mode = "minimax"
+        agent.mode = "minimax" 
 
 
 def select_mode_pygame(screen, font, agent):
@@ -229,16 +251,13 @@ def select_mode_pygame(screen, font, agent):
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
-
-            display_move_history(screen, font, move_history, start_x=600, start_y=150)
-
         pygame.display.flip()
         clock.tick(30)
 
     print(f"Selected mode: {selected_mode}")
 
 
-def display_move_history(screen, font, move_history, start_x = 600, start_y = 100):
+def display_move_history(screen, font, move_history, start_x = 500, start_y = 100):
     """
     Displays the move history on the screen.
     """
@@ -286,7 +305,7 @@ def main():
         [1, 0, 1, 0, 0]
     ]
 
-    state = State(grid)
+    state = State(None)
 
 
     pygame.init()
