@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
 Includes a State class for Task 1
 
-@author: Group B7 (100385659, 100400087 and )
+@author: B7 (100385659, 100400087 and 100464021)
 @date:   29/09/2025
 """
 import random

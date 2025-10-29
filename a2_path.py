@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
 Includes functions for algorithm pathways
 
-@author: Group B7 (100385659, 100400087, and 89123)
+@author: Group B7 (100385659, 100400087, and 100464021)
 @date:   29/09/2025
 """
 
