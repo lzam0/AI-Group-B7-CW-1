@@ -18,6 +18,10 @@ HINGER_COLOR = (225, 180, 50)
 EMPTY_COLOR = (50, 50, 50)
 TEXT_COLOR = (220, 220, 220)
 
+#Constants for move history
+move_history = []
+MAX_LOGS = 6
+
 def play(state, agentA, agentB):
     """
     Simulates the entire Hinger game session between 2 players (AI or humans)
@@ -103,6 +107,9 @@ def play(state, agentA, agentB):
                                     winner = "Human"
                                     running = False
                                 else:
+                                    move_history.append(f"Human moved at ({i}, {j})")
+                                    if len(move_history) > MAX_LOGS:
+                                        move_history.pop(0)
                                     current_agent, other_agent = other_agent, current_agent
                                     turn += 1
                         break
@@ -125,6 +132,9 @@ def play(state, agentA, agentB):
                         running = False
                     else:
                         state = new_state  #update to AI’s new board
+                        move_history.append(f"{current_agent.name} moved.")
+                        if len(move_history) > MAX_LOGS:
+                            move_history.pop(0)
                         current_agent, other_agent = other_agent, current_agent
                         turn += 1
                         clock.tick(30)  # save CPU resources
@@ -219,10 +229,26 @@ def select_mode_pygame(screen, font, agent):
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
+
+            display_move_history(screen, font, move_history, start_x=600, start_y=150)
+
         pygame.display.flip()
         clock.tick(30)
 
     print(f"Selected mode: {selected_mode}")
+
+
+def display_move_history(screen, font, move_history, start_x = 600, start_y = 100):
+    """
+    Displays the move history on the screen.
+    """
+    title = font.render("Move Log:", True, TEXT_COLOR)
+    screen.blit(title, (start_x, start_y - 40))
+    log_font = pygame.font.SysFont(None, 28)
+    
+    for i, log in enumerate(reversed(move_history)):
+        text = log_font.render(log, True, TEXT_COLOR)
+        screen.blit(text, (start_x, start_y + i * 30))
 
 def end_screen(screen, winner, font):
     """
