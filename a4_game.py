@@ -277,7 +277,16 @@ def main():
         [0, 0, 0, 1, 1],
         [1, 1, 1, 0, 0]
     ]
-    state = State(grid)
+
+    # grid to test draw gameplay
+    grid2 = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 0]
+    ]
+
+    state = State(grid2)
 
 
     pygame.init()
