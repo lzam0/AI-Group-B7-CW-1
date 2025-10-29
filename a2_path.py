@@ -4,13 +4,14 @@ Coursework 001 for: CMP-6058A Artificial Intelligence
 
 Includes functions for algorithm pathways
 
-@author: B7 (100385659, 100400087, and 89123)
+@author: Group B7 (100385659, 100400087, and 89123)
 @date:   29/09/2025
 """
 
 from collections import deque
 from typing import List, Optional
 from copy import deepcopy
+from heapq import heappush, heappop
 import heapq
 import time
 import matplotlib.pyplot as plt
@@ -18,7 +19,7 @@ import itertools
 from a1_state import State 
 
 def grids_equal(grid1, grid2) -> bool:
-    """Check if two 2D grids are identical."""
+    # Check if two 2D grids are identical
     return all(row1 == row2 for row1, row2 in zip(grid1, grid2))
 
 # BFS implememntation
@@ -33,8 +34,10 @@ def path_BFS(start: State, end: State) -> Optional[List[State]]:
     end_tuple = grid_to_tuple(end.grid)
     
     queue = deque([(start, [start])])
+    # Track visisted states to prevent repitition
     visited = {start_tuple}
     
+    # BFS loop
     while queue:
         current_state, path = queue.popleft()
         
@@ -42,10 +45,11 @@ def path_BFS(start: State, end: State) -> Optional[List[State]]:
         if grids_equal(current_state.grid, end.grid):
             return path
         
-        # Exploring possible moves
+        # Explore possible moves from current state
         for next_state in current_state.moves():
             next_tuple = grid_to_tuple(next_state.grid)
             
+            # Explore only unvisited states to avoid ifinite loop 
             if next_tuple not in visited:
                 visited.add(next_tuple)
                 queue.append((next_state, path + [next_state]))
@@ -56,6 +60,7 @@ def path_BFS(start: State, end: State) -> Optional[List[State]]:
 # Test Harness for BFS
 
 def test_path_BFS():
+    # Example start and end grid for the hinger game
     grid_start = [
         [3, 0, 0, 2, 0],
         [0, 4, 0, 0, 0],
@@ -70,11 +75,14 @@ def test_path_BFS():
         [0, 0, 0, 0, 0]
     ]
 
+    # Create State objects for BFS input
     start_state = State(grid_start)
     end_state = State(grid_end)
-
+    
+    # Run BFS to find a valid path
     path = path_BFS(start_state, end_state)
-
+    
+    # Display results in readable format
     if path is None:
         print("No safe path found.")
     else:
@@ -82,6 +90,7 @@ def test_path_BFS():
         for step, state in enumerate(path):
             print(f"\nStep {step}:")
             print(state)
+
 
 # DFS implementation
 
@@ -94,9 +103,11 @@ def path_DFS(start: State, end: State):
     def grid_to_tuple(grid):
         # Convert grids to tuples to be hashed
         return tuple(tuple(row) for row in grid)
-
+    
+    # Keep track of visited states to prevent an ifinite recursion
     visited = set()
-
+    
+    # Recursive DFS function
     def dfs(current: State, path: list):
         current_tuple = grid_to_tuple(current.grid)
         visited.add(current_tuple)
@@ -105,10 +116,11 @@ def path_DFS(start: State, end: State):
         if grids_equal(current.grid, end.grid):
             return path
 
-        # Explore neighbors (possible moves)
+        # Explore possible moves from current state
         for next_state in current.moves():
             next_tuple = grid_to_tuple(next_state.grid)
-
+            
+            # Explore only unvisited states to avoid ifinite loop
             if next_tuple not in visited:
                 result = dfs(next_state, path + [next_state])
                 if result is not None:
@@ -116,12 +128,14 @@ def path_DFS(start: State, end: State):
 
         # No path found
         return None 
+    # Start DFS recursion from state start
     return dfs(start, [start])
     
 
 # Test Harness for DFS
 
 def test_path_DFS():
+    # Example start and end grid for the hinger game
     grid_start = [
         [2, 0, 0, 0, 0],
         [0, 3, 0, 0, 0],
@@ -135,12 +149,15 @@ def test_path_DFS():
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0]
     ]
-
+    
+    # Create State objects for DFS input
     start_state = State(grid_start)
     end_state = State(grid_end)
-
+    
+    # Run BFS to find a valid path
     path = path_DFS(start_state, end_state)
-
+    
+    # Display results in readable format
     if path is None:
         print("No safe path found.")
     else:
@@ -162,9 +179,8 @@ def path_IDDFS(start: State, end: State) -> Optional[List[State]]:
         # Convert a grid into a tuple for hashing.
         return tuple(tuple(row) for row in grid)
 
-    # Recursive DFS with depth limit
+    # Depth-Limited Search
     def dls(current: State, end: State, limit: int, path: List[State], visited: set):
-        """Depth-Limited Search (DLS) used by IDDFS."""
         if grids_equal(current.grid, end.grid):
             return path
 
@@ -182,20 +198,21 @@ def path_IDDFS(start: State, end: State) -> Optional[List[State]]:
                     return result
         return None
 
-    # Iteratively deepen the search
+    # Deepen search until path is found or max depth of 50 is reached
     max_depth = 50
     for depth in range(max_depth):
         visited = set()
         result = dls(start, end, depth, [start], visited)
         if result is not None:
             return result
-
+        
+    # No valid path found
     return None
     
 # Test harness for IDDFS
 
 def test_path_IDDFS():
-
+    # Example start and end grid for the hinger game
     grid_start = [
         [2, 0, 0, 0, 0],
         [0, 3, 0, 0, 0],
@@ -209,12 +226,15 @@ def test_path_IDDFS():
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0]
     ]
-
+    
+    # Create State objects for IDDFS input
     start_state = State(grid_start)
     end_state = State(grid_end)
-
+    
+    # Run IDDFS to find a valid path
     path = path_IDDFS(start_state, end_state)
-
+    
+    # Display results in readable format
     if path is None:
         print("No safe path found.")
     else:
@@ -274,13 +294,14 @@ def path_astar(start: State, end: State) -> Optional[List[State]]:
             if next_tuple not in visited or new_g < visited[next_tuple]:
                 visited[next_tuple] = new_g
                 heapq.heappush(open_set, (new_f, new_g, next(counter), next_tuple, next_state, path + [next_state]))
-
+    
+    # No path found
     return None
 
 # Test harness for A*
 
 def test_path_astar():
-
+    # Example start and end grid for the hinger game
     grid_start = [
         [2, 0, 0, 0, 0],
         [0, 3, 0, 0, 0],
@@ -294,12 +315,15 @@ def test_path_astar():
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0]
     ]
-
+    
+    # Create State objects for IDDFS input
     start_state = State(grid_start)
     end_state = State(grid_end)
-
+    
+    # Run A* to find a valid path
     path = path_astar(start_state, end_state)
-
+    
+    # Display results in readable format
     if path is None:
         print("No safe path found.")
     else:
@@ -317,11 +341,9 @@ def test_path_astar():
 # the total hinge removal cost.
 
 def min_safe(start: State, end: State): 
- 
-    from heapq import heappush, heappop
-    import itertools
 
     def grid_to_tuple(grid):
+        # Convert grids to tuples for hashing
         return tuple(tuple(row) for row in grid)
 
     start_tuple = grid_to_tuple(start.grid)
@@ -335,14 +357,16 @@ def min_safe(start: State, end: State):
     while pq:
         cost, _, current_tuple, current, path = heappop(pq)
 
-        # Skip stale entries where we've already found a better cost
+        # Skip stale entries when better cost has been found
         if visited.get(current_tuple, float('inf')) < cost:
             continue
 
+        # Goal check
         if current_tuple == end_tuple:
             return path
-
-        for (i, j) in current.getPositions():  # all active cells
+        
+        # Explore all possible moves
+        for (i, j) in current.getPositions():
             next_grid = [row[:] for row in current.grid]
             # Since State.moves() decrements by 1, the cost per such move is 1
             move_cost = 1
@@ -354,13 +378,15 @@ def min_safe(start: State, end: State):
             if next_tuple not in visited or new_cost < visited[next_tuple]:
                 visited[next_tuple] = new_cost
                 heappush(pq, (new_cost, next(counter), next_tuple, next_state, path + [next_state]))
-
+    
+    # No safe path found
     return None
 
 # Test Harness for UCS
 
 def test_min_safe():
-    """Test the min_safe() function using Uniform Cost Search."""
+    # Test the min_safe() function using Uniform Cost Search
+    # Example start and end grid for the hinger game
     grid_start = [
         [3, 0, 0, 1, 0],
         [0, 2, 0, 0, 0],
@@ -374,12 +400,15 @@ def test_min_safe():
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0]
     ]
-
+    
+    # Create state objects for the start and goal
     start_state = State(grid_start)
     end_state = State(grid_end)
-
+    
+    # Run UCS to find least-cost path
     path = min_safe(start_state, end_state)
-
+    
+    # Display results in a readable format
     if path is None:
         print(" No safe path found.")
     else:
@@ -391,11 +420,16 @@ def test_min_safe():
                 for r in range(len(path[i].grid))
                 for c in range(len(path[i].grid[0]))
             )
-
+            # Cost is the sum of absolute differences in hinge values per move
+        
+        # Print summary of results
         print(f" Path found in {len(path) - 1} moves! (Total cost: {total_cost})\n")
+        
+        # Display each step in path
         for step, state in enumerate(path):
             print(f"Step {step}:")
             print(state)
+
 
 def compare():
     """
