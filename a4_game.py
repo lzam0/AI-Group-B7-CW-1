@@ -1,5 +1,5 @@
 """
-Authors: [100464]
+Authors: [100464021]
 """
 
 import pygame
@@ -81,8 +81,13 @@ def play(state, agentA, agentB):
 
                     if current_agent is None and event.type == pygame.MOUSEBUTTONDOWN:
                         x, y = event.pos
-                        i = y // (CELL_SIZE + MARGIN)
+                        grid_offset_y = 90  # offset for grid drawing
+                        i = (y - grid_offset_y) // (CELL_SIZE + MARGIN)
                         j = x // (CELL_SIZE + MARGIN)
+
+                        if i < 0 or i >= len(state.grid) or j < 0 or j >= len(state.grid[0]):
+                            print("Click outside grid; try again.")
+                            continue  # click outside grid
 
                         if 0 <= i < len(state.grid) and 0 <= j < len(state.grid[0]):
                             if state.grid[i][j] == 0:
