@@ -20,7 +20,7 @@ TEXT_COLOR = (220, 220, 220)
 
 #Constants for move history
 move_history = []
-MAX_LOGS = 6
+MAX_LOGS = 2
 
 def play(state, agentA, agentB):
     """
@@ -272,9 +272,9 @@ def main():
     """
 
     grid = [
-        [2, 1, 0, 1, 0],
-        [1, 2, 1, 1, 1],
-        [0, 0, 0, 1, 1],
+        [2, 1, 0, 2, 1],
+        [1, 2, 4, 2, 1],
+        [0, 0, 0, 4, 1],
         [1, 1, 1, 0, 0]
     ]
 
@@ -286,7 +286,7 @@ def main():
         [1, 0, 1, 0, 0]
     ]
 
-    state = State(grid2)
+    state = State(grid)
 
 
     pygame.init()
