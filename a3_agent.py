@@ -424,5 +424,5 @@ def tester():
     print(f"\nTotal moves made until a new region was created: {move_count}")
 
 if __name__ == "__main__":
-    test_all_strategies()
-    # tester()
+    #test_all_strategies()
+    tester()
